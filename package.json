@@ -1,0 +1,22 @@
+{
+  "name": "vue-calendar",
+  "version": "1.0.0",
+  "description": "vue-calendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frontoldman/vue-calendar.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "zr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frontoldman/vue-calendar/issues"
+  },
+  "homepage": "https://github.com/frontoldman/vue-calendar"
+}
