@@ -59,14 +59,16 @@
 
 	var _index = __webpack_require__(4);
 
-	var _index2 = _interopRequireDefault(_index);
+	var Calendar = _interopRequireWildcard(_index);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	new _vue2.default({
 		el: 'body',
 		components: {
-			calendar: _index2.default
+			Calendar: Calendar
 		}
 	});
 
@@ -10211,6 +10213,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(6)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] src/index.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(5)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -10233,7 +10240,18 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\t<div>11</div>\n</tempalte>\n\n<script>\n\t\n\texport default {\n\n\t}\n\n</script>";
+	module.exports = "\n\n\n\n<div>11</div>\n";
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = {};
 
 /***/ }
 /******/ ]);

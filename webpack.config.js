@@ -37,14 +37,6 @@ module.exports = {
                 test: /\.css$/,
                 loader: "style!css",
                 include : __dirname
-            },
-            {
-                test: /\.(png|jpg|gif|svg)$/,
-                loader: 'url',
-                query: {
-                    limit: 10000,
-                    name: '[name].[ext]?[hash]'
-                }
             }
         ]
     }

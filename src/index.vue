@@ -3,10 +3,10 @@
 
 <template>
 	<div>11</div>
-</tempalte>
+</template>
 
 <script>
-	
+
 	export default {
 
 	}
