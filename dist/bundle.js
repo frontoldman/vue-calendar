@@ -10241,7 +10241,7 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n\t{{daysOfCurrentMonth}}\n</div>\n";
+	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\" @click=\"\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n\t{{daysOfCurrentMonth}}\n</div>\n";
 
 /***/ },
 /* 6 */
@@ -10285,47 +10285,32 @@
 				return utils.formatNumBelowTen(this.date);
 			},
 			dateOfMonthBegin: function dateOfMonthBegin() {
-				var _date = new Date();
-				_date.setYear(this.year);
-				_date.setMonth(this.month);
-				_date.setDate(1);
-
-				return _date.getDay();
+				return this.getNewDate(this.year, this.month, 1).getDay();
 			},
 			daysOfCurrentMonth: function daysOfCurrentMonth() {
-				var _date = new Date();
-				_date.setYear(this.year);
-				_date.setMonth(this.month + 1);
-				_date.setDate(0);
-				return _date.getDate();
+				return this.getNewDate(this.year, this.month + 1, 0).getDate();
 			}
 		},
 		methods: {
 			changeMonth: function changeMonth(month) {
-				var _date = new Date();
-				var newMonth = this.month + month;
-
-				_date.setYear(this.year);
-				_date.setMonth(newMonth);
-				_date.setDate(1);
-
-				this.currentDateShow = _date;
+				this.currentDateShow = this.getNewDate(this.year, this.month + month, 1);
 			},
 			changeYear: function changeYear(year) {
-				var _date = new Date();
-				var newYear = this.year + year;
-
-				_date.setYear(newYear);
-				_date.setMonth(this.month);
-				_date.setDate(1);
-
-				this.currentDateShow = _date;
+				this.currentDateShow = this.getNewDate(this.year + year, this.month, 1);
 			},
 			getDayShow: function getDayShow(row, col) {
 				var dayNum = col + 1 + row * 7 - this.dateOfMonthBegin;
 				dayNum = dayNum <= 0 ? '' : dayNum;
 				dayNum = dayNum > this.daysOfCurrentMonth ? '' : dayNum;
 				return dayNum;
+			},
+			syncDate: function syncDate(row, col) {},
+			getNewDate: function getNewDate(year, month, day) {
+				var _date = new Date();
+				_date.setYear(year);
+				_date.setMonth(month);
+				_date.setDate(day);
+				return _date;
 			}
 		}
 	};

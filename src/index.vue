@@ -59,7 +59,7 @@
 				</thead>
 				<tbody>
 					<tr v-for="row in 6">
-						<td v-for="col in 7">
+						<td v-for="col in 7" @click="">
 							{{getDayShow(row, col)}}
 						</td>
 					</tr>
@@ -102,47 +102,36 @@
 				return utils.formatNumBelowTen(this.date);
 			},
 			dateOfMonthBegin() {
-				let _date = new Date();
-				_date.setYear(this.year);
-				_date.setMonth(this.month);
-				_date.setDate(1);
-
-				return _date.getDay();
+				return this.getNewDate(this.year, this.month, 1).getDay();
 			},
 			daysOfCurrentMonth() {
-				let _date = new Date();
-				_date.setYear(this.year);
-				_date.setMonth(this.month + 1);
-				_date.setDate(0);
-				return _date.getDate();
+				return this.getNewDate(this.year, this.month + 1, 0).getDate();
 			}
 		},
 		methods: {
 			changeMonth(month) {
-				let _date = new Date();
-				let newMonth = this.month + month;
-
-				_date.setYear(this.year);
-				_date.setMonth(newMonth);
-				_date.setDate(1);
-
-				this.currentDateShow = _date;
+				this.currentDateShow = 
+				this.getNewDate(this.year, this.month + month, 1);
 			},
 			changeYear(year) {
-				let _date = new Date();
-				let newYear = this.year + year;
-
-				_date.setYear(newYear);
-				_date.setMonth(this.month);
-				_date.setDate(1);
-
-				this.currentDateShow = _date;
+				this.currentDateShow = 
+				this.getNewDate(this.year + year, this.month, 1);
 			},
 			getDayShow(row, col) {
 				let dayNum = (col + 1) + (row * 7) - this.dateOfMonthBegin;
 				dayNum = dayNum <= 0 ? '' : dayNum;
 				dayNum = dayNum > this.daysOfCurrentMonth ? '' : dayNum;
 				return dayNum;
+			},
+			syncDate(row, col) {
+				
+			},
+			getNewDate(year, month, day) {
+				let _date = new Date();
+				_date.setYear(year);
+				_date.setMonth(month);
+				_date.setDate(day);
+				return _date
 			}
 		}
 	}
