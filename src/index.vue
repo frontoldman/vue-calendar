@@ -42,7 +42,7 @@
 
 <template>
 	<div class="calendar">
-		<input type="text"/>
+		<input type="text" readonly v-model="dateSelect"/>
 		<div class="cal-layer">
 			<div class="cal-header">
 				<div class="prev" v-on:click="changeYear(-1)"> << </div>
@@ -59,7 +59,7 @@
 				</thead>
 				<tbody>
 					<tr v-for="row in 6">
-						<td v-for="col in 7" @click="">
+						<td v-for="col in 7" @click="syncDate(row, col)">
 							{{getDayShow(row, col)}}
 						</td>
 					</tr>
@@ -79,6 +79,9 @@
 	}
 
 	export default {
+		props:{
+			dateSelect: String
+		},
 		data() {
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
@@ -124,7 +127,10 @@
 				return dayNum;
 			},
 			syncDate(row, col) {
-				
+				let dayNum = this.getDayShow(row, col);
+				if(dayNum){
+					this.dateSelect = `${this.year}-${this.monthFormat}-${utils.formatNumBelowTen(dayNum)}`
+				}
 			},
 			getNewDate(year, month, day) {
 				let _date = new Date();

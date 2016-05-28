@@ -67,6 +67,9 @@
 
 	new _vue2.default({
 		el: 'body',
+		data: {
+			dateSelect: '2016-12-10'
+		},
 		components: {
 			Calendar: Calendar
 		}
@@ -10241,7 +10244,7 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\" @click=\"\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n\t{{daysOfCurrentMonth}}\n</div>\n";
+	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\" readonly v-model=\"dateSelect\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\" @click=\"syncDate(row, col)\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n\t{{daysOfCurrentMonth}}\n</div>\n";
 
 /***/ },
 /* 6 */
@@ -10261,6 +10264,9 @@
 	};
 
 	exports.default = {
+		props: {
+			dateSelect: String
+		},
 		data: function data() {
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
@@ -10304,7 +10310,12 @@
 				dayNum = dayNum > this.daysOfCurrentMonth ? '' : dayNum;
 				return dayNum;
 			},
-			syncDate: function syncDate(row, col) {},
+			syncDate: function syncDate(row, col) {
+				var dayNum = this.getDayShow(row, col);
+				if (dayNum) {
+					this.dateSelect = this.year + '-' + this.monthFormat + '-' + utils.formatNumBelowTen(dayNum);
+				}
+			},
 			getNewDate: function getNewDate(year, month, day) {
 				var _date = new Date();
 				_date.setYear(year);
