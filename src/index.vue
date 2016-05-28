@@ -1,5 +1,9 @@
 
 <style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
 	.calendar .cal-layer{
 		display: inline-block;
 		background: #C6FFC5;
@@ -12,7 +16,20 @@
 		user-select: none;
 	}
 	.calendar .cal-layer .cal-header{
-		padding:8px 10px;
+		padding: 10px 10px;
+		text-align: center;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.calendar .cal-layer .cal-header .prev,
+	.calendar .cal-layer .cal-header .next{
+		display: inline-block;
+		width: 10%;
+		cursor: pointer;
+	}
+	.calendar .cal-layer .cal-header .date-text{
+		display: inline-block;
+		width: 50%;
 	}
 	.calendar table th, .calendar table td{
 		width: 40px;
@@ -27,7 +44,13 @@
 	<div class="calendar">
 		<input type="text"/>
 		<div class="cal-layer">
-			<div class="cal-header">{{this.year + '-' + this.monthFormat}}</div>
+			<div class="cal-header">
+				<div class="prev" v-on:click="changeYear(-1)"> << </div>
+				<div class="prev" v-on:click="changeMonth(-1)"> < </div>
+				<div class="date-text">{{this.year + '-' + this.monthFormat}}</div>
+				<div class="next" v-on:click="changeMonth(1)"> > </div>
+				<div class="next" v-on:click="changeYear(1)"> >> </div>
+			</div>
 			<table>
 				<thead>
 					<tr>
@@ -37,11 +60,7 @@
 				<tbody>
 					<tr v-for="row in 6">
 						<td v-for="col in 7">
-							{{
-								(col + 1) + (row * 7) - dateOfMonthBegin > daysOfCurrentMonth
-								? '' 
-								: (col + 1) + (row * 7) - dateOfMonthBegin
-							}}
+							{{getDayShow(row, col)}}
 						</td>
 					</tr>
 				</tbody>
@@ -71,13 +90,13 @@
 				return this.currentDateShow.getFullYear();
 			},
 			month() {
-				return this.currentDateShow.getMonth() + 1;
+				return this.currentDateShow.getMonth();
 			},
 			date() {
 				return this.currentDateShow.getDate();
 			},
 			monthFormat() {
-				return utils.formatNumBelowTen(this.month);
+				return utils.formatNumBelowTen(this.month + 1);
 			},
 			dayFormat() {
 				return utils.formatNumBelowTen(this.date);
@@ -85,7 +104,7 @@
 			dateOfMonthBegin() {
 				let _date = new Date();
 				_date.setYear(this.year);
-				_date.setMonth(this.month-1);
+				_date.setMonth(this.month);
 				_date.setDate(1);
 
 				return _date.getDay();
@@ -93,9 +112,37 @@
 			daysOfCurrentMonth() {
 				let _date = new Date();
 				_date.setYear(this.year);
-				_date.setMonth(this.month);
+				_date.setMonth(this.month + 1);
 				_date.setDate(0);
 				return _date.getDate();
+			}
+		},
+		methods: {
+			changeMonth(month) {
+				let _date = new Date();
+				let newMonth = this.month + month;
+
+				_date.setYear(this.year);
+				_date.setMonth(newMonth);
+				_date.setDate(1);
+
+				this.currentDateShow = _date;
+			},
+			changeYear(year) {
+				let _date = new Date();
+				let newYear = this.year + year;
+
+				_date.setYear(newYear);
+				_date.setMonth(this.month);
+				_date.setDate(1);
+
+				this.currentDateShow = _date;
+			},
+			getDayShow(row, col) {
+				let dayNum = (col + 1) + (row * 7) - this.dateOfMonthBegin;
+				dayNum = dayNum <= 0 ? '' : dayNum;
+				dayNum = dayNum > this.daysOfCurrentMonth ? '' : dayNum;
+				return dayNum;
 			}
 		}
 	}
