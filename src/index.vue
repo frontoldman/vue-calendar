@@ -32,11 +32,22 @@
 		width: 50%;
 	}
 	.calendar table th, .calendar table td{
-		width: 40px;
-		height: 40px;
+		width: 60px;
+		height: 60px;
 		text-align: center;
 		vertical-align: middle;
 		cursor: pointer;
+	}
+	.calendar table td .day-num{
+		font-size: 16px;
+	}
+	.calendar table td .lunar-num{
+		font-size: 10px;
+		text-align: right;
+		margin-top: 15px;
+	}
+	.calendar table td .lunar-num.isFest{
+		color: red;
 	}
 	.calendar table td.disableded{
 		cursor: disabled;
@@ -68,7 +79,8 @@
 				<tbody>
 					<tr v-for="row in 6">
 						<td v-for="col in 7" :class="{'disableded':isBefore(row, col),'now':isNow(row, col)}" @click="syncDate(row, col)">
-							{{getDayShow(row, col)}}
+							<div class="day-num">{{getDayShow(row, col)}}</div>
+							<div class="lunar-num" :class="{'isFest':getFest(row, col).isFest}">{{getFest(row, col).lunarDayStr}}</div>
 						</td>
 					</tr>
 				</tbody>
@@ -79,22 +91,18 @@
 
 <script>
 
-	const utils = {
-		formatNumBelowTen(num) {
-			return num < 10 ? '0' + num : num;
-		}
-	}
+	import { formatNumBelowTen } from './utils'
+	import { GetLunarDay } from './Lunar'
 
 	export default {
 		props:{
 			dateSelect: String
 		},
 		data() {
-			let dateSelect = this.dateSelect || '';
-
+			let currentDateShow = this.dateSelect ? new Date(this.dateSelect) : new Date();
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
-				currentDateShow: new Date(dateSelect)
+				currentDateShow: currentDateShow
 			}
 		},
 		computed: {
@@ -108,10 +116,10 @@
 				return this.currentDateShow.getDate();
 			},
 			monthFormat() {
-				return utils.formatNumBelowTen(this.month + 1);
+				return formatNumBelowTen(this.month + 1);
 			},
 			dayFormat() {
-				return utils.formatNumBelowTen(this.date);
+				return formatNumBelowTen(this.date);
 			},
 			dateOfMonthBegin() {
 				return this.getNewDate(this.year, this.month, 1).getDay();
@@ -138,7 +146,7 @@
 			syncDate(row, col) {
 				let dayNum = this.getDayShow(row, col);
 				if(dayNum && !this.isBefore(row, col)){
-					this.dateSelect = `${this.year}-${this.monthFormat}-${utils.formatNumBelowTen(dayNum)}`
+					this.dateSelect = `${this.year}-${this.monthFormat}-${formatNumBelowTen(dayNum)}`
 				}
 			},
 			getNewDate(year, month, day) {
@@ -159,6 +167,18 @@
 					return true;
 				}
 				return false;
+			},
+			getFest(row, col) {
+				const dayNum = this.getDayShow(row, col);
+				const { lunarDayStr, isFest } = GetLunarDay(this.year, this.monthFormat, formatNumBelowTen(dayNum)); 
+				if(dayNum){
+					return { 
+						lunarDayStr,
+						isFest
+					}
+				}
+
+				return {}
 			},
 			_getDateByDayNum(row, col) {
 				let dayNum = this.getDayShow(row, col);
