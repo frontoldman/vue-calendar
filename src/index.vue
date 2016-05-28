@@ -14,6 +14,7 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
+		position: absolute;
 	}
 	.calendar .cal-layer .cal-header{
 		padding: 10px 10px;
@@ -60,9 +61,9 @@
 </style>
 
 <template>
-	<div class="calendar">
-		<input type="text" readonly v-model="dateSelect"/>
-		<div class="cal-layer">
+	<div class="calendar" v-on:click.stop="noop">
+		<input type="text" readonly v-model="dateSelect" @focus="showCalendar($event)"/>
+		<div class="cal-layer" v-show="isShow" :style="{'top': top, 'left': left}">
 			<div class="cal-header">
 				<div class="prev" v-on:click="changeYear(-1)"> << </div>
 				<div class="prev" v-on:click="changeMonth(-1)"> < </div>
@@ -102,8 +103,14 @@
 			let currentDateShow = this.dateSelect ? new Date(this.dateSelect) : new Date();
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
-				currentDateShow: currentDateShow
+				currentDateShow: currentDateShow,
+				isShow: false,
+				top: 0,
+				left: 0
 			}
+		},
+		ready() {
+			document.addEventListener('click', this._hideCalendar, false);
 		},
 		computed: {
 			year() {
@@ -129,6 +136,7 @@
 			}
 		},
 		methods: {
+			noop() {},
 			changeMonth(month) {
 				this.currentDateShow = 
 				this.getNewDate(this.year, this.month + month, 1);
@@ -179,6 +187,16 @@
 				}
 
 				return {}
+			},
+			showCalendar(event) {
+				const target = event.target;
+				const { left, bottom } = target.getBoundingClientRect();
+				this.left = left + 'px';
+				this.top = bottom + 'px';
+				this.isShow = true;
+			},
+			_hideCalendar() {
+				this.isShow = false;
 			},
 			_getDateByDayNum(row, col) {
 				let dayNum = this.getDayShow(row, col);
