@@ -38,6 +38,14 @@
 		vertical-align: middle;
 		cursor: pointer;
 	}
+	.calendar table td.disableded{
+		cursor: disabled;
+		color: #dedede;
+	}
+	.calendar table td.now{
+		background: #336633;
+		color: #fff;
+	}
 </style>
 
 <template>
@@ -59,14 +67,13 @@
 				</thead>
 				<tbody>
 					<tr v-for="row in 6">
-						<td v-for="col in 7" @click="syncDate(row, col)">
+						<td v-for="col in 7" :class="{'disableded':isBefore(row, col),'now':isNow(row, col)}" @click="syncDate(row, col)">
 							{{getDayShow(row, col)}}
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		{{daysOfCurrentMonth}}
 	</div>
 </template>
 
@@ -83,9 +90,11 @@
 			dateSelect: String
 		},
 		data() {
+			let dateSelect = this.dateSelect || '';
+
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
-				currentDateShow: new Date()
+				currentDateShow: new Date(dateSelect)
 			}
 		},
 		computed: {
@@ -128,7 +137,7 @@
 			},
 			syncDate(row, col) {
 				let dayNum = this.getDayShow(row, col);
-				if(dayNum){
+				if(dayNum && !this.isBefore(row, col)){
 					this.dateSelect = `${this.year}-${this.monthFormat}-${utils.formatNumBelowTen(dayNum)}`
 				}
 			},
@@ -138,6 +147,22 @@
 				_date.setMonth(month);
 				_date.setDate(day);
 				return _date
+			},
+			isBefore(row, col) {
+				if(this._getDateByDayNum(row, col).getTime() < (new Date()).getTime()){
+					return true;
+				}
+				return false;
+			},
+			isNow(row, col) {
+				if(this._getDateByDayNum(row, col).getTime() === (new Date()).getTime()){
+					return true;
+				}
+				return false;
+			},
+			_getDateByDayNum(row, col) {
+				let dayNum = this.getDayShow(row, col);
+				return this.getNewDate(this.year, this.month, dayNum);
 			}
 		}
 	}

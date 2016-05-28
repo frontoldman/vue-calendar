@@ -10244,7 +10244,7 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\" readonly v-model=\"dateSelect\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\" @click=\"syncDate(row, col)\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n\t{{daysOfCurrentMonth}}\n</div>\n";
+	module.exports = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"calendar\">\n\t<input type=\"text\" readonly v-model=\"dateSelect\"/>\n\t<div class=\"cal-layer\">\n\t\t<div class=\"cal-header\">\n\t\t\t<div class=\"prev\" v-on:click=\"changeYear(-1)\"> << </div>\n\t\t\t<div class=\"prev\" v-on:click=\"changeMonth(-1)\"> < </div>\n\t\t\t<div class=\"date-text\">{{this.year + '-' + this.monthFormat}}</div>\n\t\t\t<div class=\"next\" v-on:click=\"changeMonth(1)\"> > </div>\n\t\t\t<div class=\"next\" v-on:click=\"changeYear(1)\"> >> </div>\n\t\t</div>\n\t\t<table>\n\t\t\t<thead>\n\t\t\t\t<tr>\n\t\t\t\t\t<th v-for=\"weekday in weeks\" track-by=\"$index\">{{weekday}}</th>\n\t\t\t\t</tr>\n\t\t\t</thead>\n\t\t\t<tbody>\n\t\t\t\t<tr v-for=\"row in 6\">\n\t\t\t\t\t<td v-for=\"col in 7\" :class=\"{'disableded':isBefore(row, col),'now':isNow(row, col)}\" @click=\"syncDate(row, col)\">\n\t\t\t\t\t\t{{getDayShow(row, col)}}\n\t\t\t\t\t</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t</div>\n</div>\n";
 
 /***/ },
 /* 6 */
@@ -10268,9 +10268,11 @@
 			dateSelect: String
 		},
 		data: function data() {
+			var dateSelect = this.dateSelect || '';
+
 			return {
 				weeks: ['日', '一', '二', '三', '四', '五', '六'],
-				currentDateShow: new Date()
+				currentDateShow: new Date(dateSelect)
 			};
 		},
 
@@ -10312,7 +10314,7 @@
 			},
 			syncDate: function syncDate(row, col) {
 				var dayNum = this.getDayShow(row, col);
-				if (dayNum) {
+				if (dayNum && !this.isBefore(row, col)) {
 					this.dateSelect = this.year + '-' + this.monthFormat + '-' + utils.formatNumBelowTen(dayNum);
 				}
 			},
@@ -10322,6 +10324,22 @@
 				_date.setMonth(month);
 				_date.setDate(day);
 				return _date;
+			},
+			isBefore: function isBefore(row, col) {
+				if (this._getDateByDayNum(row, col).getTime() < new Date().getTime()) {
+					return true;
+				}
+				return false;
+			},
+			isNow: function isNow(row, col) {
+				if (this._getDateByDayNum(row, col).getTime() === new Date().getTime()) {
+					return true;
+				}
+				return false;
+			},
+			_getDateByDayNum: function _getDateByDayNum(row, col) {
+				var dayNum = this.getDayShow(row, col);
+				return this.getNewDate(this.year, this.month, dayNum);
 			}
 		}
 	};
@@ -10361,7 +10379,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n*{\n\tmargin: 0;\n\tpadding: 0;\n}\n.calendar .cal-layer{\n\tdisplay: inline-block;\n\tbackground: #C6FFC5;\n\tbox-shadow: 3px 3px 5px #888888;\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\t-moz-user-select: none;\n\t-ms-user-select: none;\n\tuser-select: none;\n}\n.calendar .cal-layer .cal-header{\n\tpadding: 10px 10px;\n\ttext-align: center;\n\tfont-size: 20px;\n\tfont-weight: bold;\n}\n.calendar .cal-layer .cal-header .prev,\n.calendar .cal-layer .cal-header .next{\n\tdisplay: inline-block;\n\twidth: 10%;\n\tcursor: pointer;\n}\n.calendar .cal-layer .cal-header .date-text{\n\tdisplay: inline-block;\n\twidth: 50%;\n}\n.calendar table th, .calendar table td{\n\twidth: 40px;\n\theight: 40px;\n\ttext-align: center;\n\tvertical-align: middle;\n\tcursor: pointer;\n}\n", ""]);
+	exports.push([module.id, "\n\n*{\n\tmargin: 0;\n\tpadding: 0;\n}\n.calendar .cal-layer{\n\tdisplay: inline-block;\n\tbackground: #C6FFC5;\n\tbox-shadow: 3px 3px 5px #888888;\n\t-webkit-touch-callout: none;\n\t-webkit-user-select: none;\n\t-moz-user-select: none;\n\t-ms-user-select: none;\n\tuser-select: none;\n}\n.calendar .cal-layer .cal-header{\n\tpadding: 10px 10px;\n\ttext-align: center;\n\tfont-size: 20px;\n\tfont-weight: bold;\n}\n.calendar .cal-layer .cal-header .prev,\n.calendar .cal-layer .cal-header .next{\n\tdisplay: inline-block;\n\twidth: 10%;\n\tcursor: pointer;\n}\n.calendar .cal-layer .cal-header .date-text{\n\tdisplay: inline-block;\n\twidth: 50%;\n}\n.calendar table th, .calendar table td{\n\twidth: 40px;\n\theight: 40px;\n\ttext-align: center;\n\tvertical-align: middle;\n\tcursor: pointer;\n}\n.calendar table td.disableded{\n\tcursor: disabled;\n\tcolor: #dedede;\n}\n.calendar table td.now{\n\tbackground: #336633;\n\tcolor: #fff;\n}\n", ""]);
 
 	// exports
 
